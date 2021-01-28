@@ -31,7 +31,7 @@ export default class NewCard extends Component {
         />
         <TouchableOpacity>
           <Text>
-            Add Question
+            Submit
           </Text>
         </TouchableOpacity>
       </View>

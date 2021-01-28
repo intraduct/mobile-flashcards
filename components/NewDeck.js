@@ -19,7 +19,7 @@ export default class NewDeck extends Component {
           onChangeText={text => this.onChangeText(text)}
           placeholder="Decktitle"
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Home')}>
           <Text>
             Create Deck
           </Text>

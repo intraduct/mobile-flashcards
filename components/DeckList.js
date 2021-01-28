@@ -17,13 +17,19 @@ export default class DeckList extends Component {
     return (
       <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
         {Object.keys(this.decks).map(name => (
-          <TouchableOpacity key={name}>
+          <TouchableOpacity
+            key={name}
+            onPress={() => this.props.navigation.navigate(
+              'DeckView',
+              { name }
+            )}>
             <View>
               <Text>{name}</Text>
               <Text>Cards: {this.decks[name].count}</Text>
             </View>
           </TouchableOpacity>
-        ))}
+        ))
+        }
       </View>
     );
   }
