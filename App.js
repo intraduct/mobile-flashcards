@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -10,6 +10,10 @@ import Constants from 'expo-constants'
 import NewDeck from './components/NewDeck';
 import NewCard from './components/NewCard';
 import Quiz from './components/Quiz';
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import reducer from './reducers'
+
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -34,14 +38,19 @@ function StackNavigator() {
   );
 }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <View
-        style={{ height: Constants.statusBarHeight }}>
-        <StatusBar style="auto" />
-      </View>
-      <StackNavigator />
-    </NavigationContainer>
-  );
+export default class App extends Component {
+
+  render() {
+    return (
+      <Provider store={createStore(reducer)}>
+        <NavigationContainer>
+          <View
+            style={{ height: Constants.statusBarHeight }}>
+            <StatusBar style="auto" />
+          </View>
+          <StackNavigator />
+        </NavigationContainer>
+      </Provider>
+    );
+  }
 }

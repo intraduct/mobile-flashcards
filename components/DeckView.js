@@ -1,18 +1,34 @@
 import React, { Component } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import { removeDeck } from '../actions';
+import { removeDeckFromStorage } from '../utils/api';
 
 class DeckView extends Component {
 
   componentDidMount() {
-    this.props.navigation.setOptions({ title: this.props.route.params.name })
+    this.props.navigation.setOptions({ title: this.props.deck.name })
+  }
+
+  removeDeck() {
+    const { dispatch, deck, navigation } = this.props
+    const { name } = deck
+
+    removeDeckFromStorage(name)
+    dispatch(removeDeck(name))
+    navigation.navigate('Home')
   }
 
   render() {
-    const { name } = this.props.route.params;
+    const { deck } = this.props
+    if (typeof deck === 'undefined') {
+      return (<View />);
+    }
+    const { name } = deck;
     return (
       <View>
-        <Text>Betriebssysteme</Text>
-        <Text>Cards: 12</Text>
+        <Text>{name}</Text>
+        <Text>Cards: {deck.cards.length}</Text>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate(
             'Quiz',
@@ -26,9 +42,7 @@ class DeckView extends Component {
         )}>
           <Text>Add Card</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => this.props.navigation.navigate(
-          'Home'
-        )}>
+        <TouchableOpacity onPress={() => this.removeDeck()}>
           <Text>Delete Deck</Text>
         </TouchableOpacity>
       </View>
@@ -36,4 +50,10 @@ class DeckView extends Component {
   }
 }
 
-export default DeckView;
+const mapStateToProps = (decks, props) => {
+  return {
+    deck: decks[props.route.params.name]
+  }
+}
+
+export default connect(mapStateToProps)(DeckView);

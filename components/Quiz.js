@@ -6,7 +6,7 @@ export default class Quiz extends Component {
   state = {
     index: 2,
     correct: 1,
-    questions: [
+    cards: [
       { question: 'q0', answer: 'a0' },
       { question: 'q1', answer: 'a1' },
       { question: 'q2', answer: 'a2' },
@@ -28,18 +28,18 @@ export default class Quiz extends Component {
   }
 
   renderNextQuestion() {
-    const { index, questions } = this.state;
-    const question = questions[index];
+    const { index, cards } = this.state;
+    const card = cards[index];
 
-    if (question) {
+    if (card) {
       return (
         <View>
           <View>
             <Text>
-              {index + 1}/{questions.length}
+              {index + 1}/{cards.length}
             </Text>
             <Text>
-              {question.question}
+              {card.question}
             </Text>
             <TouchableOpacity>
               <Text>
@@ -49,10 +49,10 @@ export default class Quiz extends Component {
           </View>
           <View>
             <Text>
-              {question.question}
+              {card.question}
             </Text>
             <Text>
-              {question.answer}
+              {card.answer}
             </Text>
             <TouchableOpacity>
               <Text>Correct</Text>
@@ -69,8 +69,8 @@ export default class Quiz extends Component {
   }
 
   renderResult() {
-    const { correct, questions } = this.state;
-    const length = questions.length
+    const { correct, cards } = this.state;
+    const length = cards.length
     return (
       <View>
         <Text>
@@ -81,10 +81,10 @@ export default class Quiz extends Component {
   }
 
   render() {
-    const { questions } = this.state;
+    const { cards } = this.state;
 
     return (
-      questions.length === 0 ?
+      cards.length === 0 ?
         this.renderEmptyQuiz() :
         this.renderNextQuestion()
     );

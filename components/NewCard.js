@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { connect } from 'react-redux';
+import { addCard } from '../actions';
+import { saveCardToStorage } from '../utils/api';
 
-export default class NewCard extends Component {
+class NewCard extends Component {
   state = {
     question: '',
     answer: ''
@@ -13,6 +16,18 @@ export default class NewCard extends Component {
         [key]: value
       }
     );
+  }
+
+  submitNewCard() {
+    const { question, answer } = this.state
+    const { dispatch, navigation, route } = this.props
+    const { name } = route.params
+
+    this.setState({ question: '', answer: '' })
+    const card = { name, question, answer }
+    saveCardToStorage(card)
+    dispatch(addCard(card))
+    navigation.goBack()
   }
 
   render() {
@@ -29,7 +44,7 @@ export default class NewCard extends Component {
           onChangeText={answer => this.onChangeText('answer', answer)}
           placeholder="Answer"
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.submitNewCard()}>
           <Text>
             Submit
           </Text>
@@ -38,3 +53,5 @@ export default class NewCard extends Component {
     );
   }
 }
+
+export default connect()(NewCard)
