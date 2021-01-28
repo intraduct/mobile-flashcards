@@ -1,21 +1,27 @@
+import * as React from 'react';
+import { Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import DeckView from './components/DeckView';
+import DeckList from './components/DeckList';
+import Constants from 'expo-constants'
+import NewDeck from './components/NewDeck';
+import NewCard from './components/NewCard';
+
+const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <View
+        style={{ height: Constants.statusBarHeight }}>
+        <StatusBar style="auto" />
+      </View>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={DeckList} />
+        <Tab.Screen name="New Deck" component={NewDeck} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
