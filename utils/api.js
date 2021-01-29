@@ -15,11 +15,12 @@ export async function fetchDecksFromStorage() {
 }
 
 export function saveCardToStorage({ question, answer, name }) {
-  AsyncStorage.mergeItem(STORAGE_KEY, JSON.stringify({
-    [name]: {
-      cards: [{ question, answer }]
-    }
-  }))
+  AsyncStorage.getItem(STORAGE_KEY)
+    .then(results => {
+      const data = JSON.parse(results)
+      data[name].cards.push({ question, answer })
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    })
 }
 
 export function saveDeckTitleToStorage(name) {

@@ -1,20 +1,29 @@
 import React, { Component } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native';
+import { connect } from 'react-redux';
 
-export default class Quiz extends Component {
+class Quiz extends Component {
 
   state = {
-    index: 2,
-    correct: 1,
-    cards: [
-      { question: 'q0', answer: 'a0' },
-      { question: 'q1', answer: 'a1' },
-      { question: 'q2', answer: 'a2' },
-    ]
+    index: 0,
+    correct: 0
   }
 
   componentDidMount() {
-    this.props.navigation.setOptions({ title: this.props.route.params.name })
+    this.props.navigation.setOptions({ title: this.props.deck.name })
+  }
+
+  correctAnswer() {
+    this.setState(prevState => ({
+      index: prevState.index + 1,
+      correct: prevState.correct + 1
+    }))
+  }
+
+  wrongAnswer() {
+    this.setState(prevState => ({
+      index: prevState.index + 1
+    }))
   }
 
   renderEmptyQuiz() {
@@ -28,8 +37,9 @@ export default class Quiz extends Component {
   }
 
   renderNextQuestion() {
-    const { index, cards } = this.state;
-    const card = cards[index];
+    const { index } = this.state
+    const { cards } = this.props.deck
+    const card = cards[index]
 
     if (card) {
       return (
@@ -54,10 +64,10 @@ export default class Quiz extends Component {
             <Text>
               {card.answer}
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => this.correctAnswer()}>
               <Text>Correct</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => this.wrongAnswer()}>
               <Text>Wrong</Text>
             </TouchableOpacity>
           </View>
@@ -69,7 +79,8 @@ export default class Quiz extends Component {
   }
 
   renderResult() {
-    const { correct, cards } = this.state;
+    const { correct } = this.state
+    const { cards } = this.props.deck
     const length = cards.length
     return (
       <View>
@@ -81,7 +92,7 @@ export default class Quiz extends Component {
   }
 
   render() {
-    const { cards } = this.state;
+    const { cards } = this.props.deck
 
     return (
       cards.length === 0 ?
@@ -90,3 +101,11 @@ export default class Quiz extends Component {
     );
   }
 }
+
+const mapStateToProps = (decks, props) => {
+  return {
+    deck: decks[props.route.params.name]
+  }
+}
+
+export default connect(mapStateToProps)(Quiz)

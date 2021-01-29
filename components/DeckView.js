@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { removeDeck } from '../actions';
 import { removeDeckFromStorage } from '../utils/api';
+import AppLoading from 'expo-app-loading';
 
 class DeckView extends Component {
 
@@ -16,14 +17,15 @@ class DeckView extends Component {
 
     removeDeckFromStorage(name)
     dispatch(removeDeck(name))
-    navigation.navigate('Home')
+    navigation.goBack()
   }
 
   render() {
     const { deck } = this.props
     if (typeof deck === 'undefined') {
-      return (<View />);
+      return <AppLoading />;
     }
+
     const { name } = deck;
     return (
       <View>
