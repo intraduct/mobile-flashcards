@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { removeDeck } from '../actions';
 import { removeDeckFromStorage } from '../utils/api';
@@ -28,29 +28,70 @@ class DeckView extends Component {
 
     const { name } = deck;
     return (
-      <View>
-        <Text>{name}</Text>
-        <Text>Cards: {deck.cards.length}</Text>
+      <View style={styles.deck}>
+        <Text style={styles.title}>{name}</Text>
+        <Text style={styles.count}>Cards: {deck.cards.length}</Text>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate(
             'Quiz',
             { name }
           )}>
-          <Text>Start Quiz</Text>
+          <Text style={styles.startButton}>Start Quiz</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.props.navigation.navigate(
           'Add Card',
           { name }
         )}>
-          <Text>Add Card</Text>
+          <Text style={styles.addCardButton}>Add Card</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.removeDeck()}>
-          <Text>Delete Deck</Text>
+          <Text style={styles.deleteButton}>Delete Deck</Text>
         </TouchableOpacity>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center'
+  },
+  deck: {
+    paddingVertical: 30,
+    alignSelf: 'stretch',
+    alignItems: 'center'
+  },
+  title: {
+    fontSize: 24
+  },
+  count: {
+    fontSize: 16,
+    color: 'gray'
+  },
+  startButton: {
+    marginTop: 20,
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: 'dodgerblue',
+    color: 'white',
+    fontSize: 20,
+  },
+  addCardButton: {
+    marginTop: 20,
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: 'darkslateblue',
+    color: 'white',
+    fontSize: 20
+  },
+  deleteButton: {
+    fontSize: 16,
+    marginTop: 20,
+    color: 'red',
+    borderBottomWidth: 1,
+    borderColor: 'red'
+  }
+})
 
 const mapStateToProps = (decks, props) => {
   return {

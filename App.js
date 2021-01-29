@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -13,6 +13,7 @@ import Quiz from './components/Quiz';
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import reducer from './reducers'
+import { setLocalNotification } from './utils/api';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -29,7 +30,7 @@ function TabNavigator() {
 
 function StackNavigator() {
   return (
-    <Stack.Navigator >
+    <Stack.Navigator>
       <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="DeckView" component={DeckView} />
       <Stack.Screen name="Quiz" component={Quiz} />
@@ -39,6 +40,10 @@ function StackNavigator() {
 }
 
 export default class App extends Component {
+
+  componentDidMount() {
+    setLocalNotification()
+  }
 
   render() {
     return (

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity } from 'react-native'
+import { Text, View, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
 import { fetchDecksFromStorage } from '../utils/api'
 import AppLoading from 'expo-app-loading';
 import { connect } from 'react-redux'
@@ -21,34 +21,64 @@ class DeckList extends Component {
       .then(() => this.setState(() => ({ ready: true })))
   }
 
+  renderDeck({ item }, { navigation }) {
+    const { name, cards } = item
+    return (
+      <TouchableOpacity style={styles.deck}
+        onPress={() => navigation.navigate(
+          'DeckView',
+          { name }
+        )}>
+        <View style={{}}>
+          <Text style={styles.title}>{name}</Text>
+          <Text style={styles.count}>Cards: {cards.length}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
-    const { decks } = this.props
     const { ready } = this.state
 
     if (ready === false) {
       return <AppLoading />
     }
 
+    const decks = Object.values(this.props.decks)
     return (
-      <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
-        {Object.keys(decks).map(name => (
-          <TouchableOpacity
-            key={name}
-            onPress={() => this.props.navigation.navigate(
-              'DeckView',
-              { name }
-            )}>
-            <View>
-              <Text>{name}</Text>
-              <Text>Cards: {decks[name].cards.length}</Text>
-            </View>
-          </TouchableOpacity>
-        ))
-        }
+      <View style={styles.container}>
+        <FlatList
+          data={decks}
+          renderItem={item => this.renderDeck(item, this.props)}
+          keyExtractor={deck => deck.name}
+          extraData={this.props}
+        />
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start'
+  },
+  deck: {
+    paddingVertical: 30,
+    borderBottomWidth: 1,
+    alignSelf: 'stretch',
+    alignItems: 'center'
+  },
+  title: {
+    fontSize: 24,
+    textAlign: 'center'
+  },
+  count: {
+    fontSize: 16,
+    color: 'gray',
+    textAlign: 'center'
+  }
+})
 
 function mapStateToProps(decks) {
   return {
@@ -56,6 +86,4 @@ function mapStateToProps(decks) {
   }
 }
 
-export default connect(
-  mapStateToProps,
-)(DeckList)
+export default connect(mapStateToProps)(DeckList)
