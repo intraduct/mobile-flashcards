@@ -30,7 +30,10 @@ class NewDeck extends Component {
     this.setState({ value: '' })
     dispatch(addDeck(value))
     saveDeckTitleToStorage(value);
-    navigation.goBack()
+    navigation.navigate(
+      'DeckView',
+      { name: value }
+    )
   }
 
   render() {

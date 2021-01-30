@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native'
 import { connect } from 'react-redux'
+import { resetLocalNotificationTomorrow } from '../utils/api'
 
 class Quiz extends Component {
 
@@ -127,7 +128,7 @@ class Quiz extends Component {
               <Text style={[styles.button, { backgroundColor: 'limegreen' }]}>Correct</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.wrongAnswer()}>
-              <Text style={[styles.button, { backgroundColor: 'crimson' }]}>Wrong</Text>
+              <Text style={[styles.button, { backgroundColor: 'crimson' }]}>Incorrect</Text>
             </TouchableOpacity>
           </View>
         </View >
@@ -137,18 +138,38 @@ class Quiz extends Component {
     return this.renderResult();
   }
 
+  restartQuiz() {
+    this.setState({
+      index: 0,
+      correct: 0,
+      displayQuestion: true
+    })
+    this.state.degree.setValue(0)
+  }
+
   renderResult() {
     const { correct } = this.state
     const { cards } = this.props.deck
     const length = cards.length
+
+    resetLocalNotificationTomorrow()
+
     return (
-      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+      <View style={{ justifyContent: 'space-around', alignItems: 'center', flex: 1 }}>
         <Text style={{ textAlign: 'center', fontSize: 24, margin: 20 }}>
           🎉 Congratulation! 🎉
         </Text>
         <Text style={{ textAlign: 'center', fontSize: 16, margin: 20 }}>
           You answered {correct} / {length} ({Math.round(correct / length * 100)} %) correctly.
         </Text>
+        <View style={{ alignSelf: 'stretch', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => this.restartQuiz()}>
+            <Text style={[styles.button, { backgroundColor: 'dodgerblue' }]}>Restart Quiz</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <Text style={[styles.button, { backgroundColor: 'darkslateblue' }]}>Back To Deck</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

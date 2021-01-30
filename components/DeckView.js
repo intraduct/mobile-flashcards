@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { connect } from 'react-redux';
 import { removeDeck } from '../actions';
 import { removeDeckFromStorage } from '../utils/api';
@@ -7,8 +7,19 @@ import AppLoading from 'expo-app-loading';
 
 class DeckView extends Component {
 
+  state = {
+    opacity: new Animated.Value(0)
+  }
+
   componentDidMount() {
     this.props.navigation.setOptions({ title: this.props.deck.name })
+
+    const { opacity } = this.state
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true
+    }).start()
   }
 
   removeDeck() {
@@ -22,13 +33,15 @@ class DeckView extends Component {
 
   render() {
     const { deck } = this.props
+    const { opacity } = this.state
+
     if (typeof deck === 'undefined') {
       return <AppLoading />;
     }
 
     const { name } = deck;
     return (
-      <View style={styles.deck}>
+      <Animated.View style={[styles.deck, { opacity }]}>
         <Text style={styles.title}>{name}</Text>
         <Text style={styles.count}>Cards: {deck.cards.length}</Text>
         <TouchableOpacity
@@ -45,9 +58,11 @@ class DeckView extends Component {
           <Text style={styles.addCardButton}>Add Card</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.removeDeck()}>
-          <Text style={styles.deleteButton}>Delete Deck</Text>
+          <Text style={styles.deleteButton}>
+            Delete Deck
+          </Text>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     );
   }
 }

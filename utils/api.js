@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Notifications from 'expo-notifications'
 
 const STORAGE_KEY_DECKS = 'udacityMobileFlashcards:decks'
+const NOTIFICATION_KEY = 'udacityMobileFlashcards:notification'
 
 export async function fetchDecksFromStorage() {
   const jsonValue = await AsyncStorage.getItem(STORAGE_KEY_DECKS)
@@ -32,24 +33,36 @@ export function removeDeckFromStorage(name) {
     })
 }
 
+export function resetLocalNotificationTomorrow() {
+  AsyncStorage.removeItem(NOTIFICATION_KEY)
+    .then(setLocalNotification)
+}
+
 export async function setLocalNotification() {
-  Notifications.requestPermissionsAsync()
-    .then(({ status }) => {
-      if (status === 'granted') {
-        Notifications.cancelAllScheduledNotificationsAsync()
+  AsyncStorage.getItem(NOTIFICATION_KEY)
+    .then(JSON.parse)
+    .then((data) => {
+      if (data === null) {
+        Notifications.requestPermissionsAsync()
+          .then(({ status }) => {
+            if (status === 'granted') {
+              Notifications.cancelAllScheduledNotificationsAsync()
 
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(8);
-        tomorrow.setMinutes(0);
+              const tomorrow = new Date();
+              tomorrow.setDate(tomorrow.getDate() + 1);
+              tomorrow.setHours(8);
+              tomorrow.setMinutes(0);
 
-        Notifications.scheduleNotificationAsync({
-          content: {
-            title: "Start learning!",
-            body: "👋 don't forget to study today!"
-          },
-          trigger: tomorrow,
-        })
+              Notifications.scheduleNotificationAsync({
+                content: {
+                  title: "Start learning!",
+                  body: "👋 don't forget to study today!"
+                },
+                trigger: tomorrow,
+              })
+            }
+          })
+        AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true))
       }
     })
 }
